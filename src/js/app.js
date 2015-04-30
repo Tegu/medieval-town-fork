@@ -14,6 +14,7 @@ global.THREE = THREE;
 
 require('./plugins/MTLLoader');
 require('./plugins/OBJMTLLoader');
+require('./plugins/OBJExporter');
 require('./plugins/OrbitControls');
 
 var scene = new THREE.Scene();
@@ -84,6 +85,7 @@ models.load(function() {
 
   gui.add(building, 'generateRandomSeed');
   gui.add(building, 'generate');
+  gui.add(building, 'exportOBJ');
 });
 
 var render = function () {

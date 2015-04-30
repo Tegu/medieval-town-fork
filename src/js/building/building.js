@@ -206,6 +206,39 @@ Building.prototype.generateRandomSeed = function() {
   this.generate();
 };
 
+Building.prototype.exportOBJ = function() {
+  var exporter = new THREE.OBJExporter()
+  //var exporter = new THREE.STLExporter()
+  //var exporter = new THREE.SceneExporter()
+  var exportString = function ( output, filename ) {
+    var blob = new Blob( [ output ], { type: 'text/plain' } );
+    var objectURL = URL.createObjectURL( blob );
+
+    var link = document.createElement( 'a' );
+    link.href = objectURL;
+    link.download = filename || 'data.json';
+    link.target = '_blank';
+    link.click();
+    return link.download + '\n' + objectURL;
+  };
+  var urls = exportString(exporter.parse(this.mesh), 'model.obj');
+  // mtl
+  var output = '';
+  for (var i = 0, l = this.mesh.material.materials.length; i < l; i++) {
+    var material = this.mesh.material.materials[i];
+    if (material.type == 'MeshPhongMaterial') {
+      output += 'newmtl ' + material.name + '\n';
+      output += 'Ns ' + material.shininess + '\n';
+      output += 'Kd ' + material.color.r + ' ' + material.color.g + ' ' + material.color.b + '\n';
+      output += 'Ks ' + material.specular.r + ' ' + material.specular.g + ' ' + material.specular.b + '\n';
+      output += 'Ke ' + material.emissive.r + ' ' + material.emissive.g + ' ' + material.emissive.b + '\n';
+      output += '\n';
+    }
+  }
+  urls += '\n' + exportString(output, 'model.mtl');
+  alert(urls);
+};
+
 Building.prototype._setFloor = function(voxel) {
   var floor;
 
